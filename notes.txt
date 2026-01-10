@@ -1109,7 +1109,7 @@ ansible-playbook name.yaml --list-tags
 ansible-playbook your_playbook.yml --tags "deploy"  --> to run the playbook
 
 
-ansible-playbook manage_web_server.yml --skip-tags start  --> to skip the particular task.
+ansible-playbook manage_web_server.yml --skip-tags install  --> to skip the particular task.
 
 
 
