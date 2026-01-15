@@ -1411,7 +1411,7 @@ yaml
 - name: Test Ansible Vault
   hosts: all
   vars_files:
-    - secret.yaml
+    - secret.yml
   tasks:
     - name: Print sensitive variables
       debug:
