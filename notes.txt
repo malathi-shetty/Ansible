@@ -1137,7 +1137,7 @@ The role will have a similar structure to before but will include a `templates` 
 
 
 roles/
-├── apache
+├── httpd
 │   ├── tasks/
 │   │   └── main.yml
 │   ├── templates/
@@ -1164,15 +1164,15 @@ roles/
 
  Role Files
 
-# 1. `roles/apache/tasks/main.yml`
+# 1. `roles/httpd/tasks/main.yml`
 
 yaml
 ---
 # tasks/main.yml
 
-- name: Install Apache HTTP Server
+- name: Install httpd HTTP Server
   yum:
-    name: "{{ apache_package_name }}"
+    name: "{{ httpd_package_name }}"
     state: present
   tags: install
 
@@ -1192,7 +1192,7 @@ yaml
   tags: deploy
 
 
-# 2. `roles/apache/templates/index.html`
+# 2. `roles/httpd/templates/index.html`
 
 Place your `index.html` file in this directory. This will be a template that Ansible can process, and if necessary, you can include variables in this file (e.g., `{{ some_variable }}`) to make it dynamic.
 
@@ -1205,28 +1205,28 @@ Example `index.html` (with a simple template):
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Apache</title>
+    <title>Welcome to httpd</title>
 </head>
 <body>
-    <h1>Welcome to {{ apache_server_name }}!</h1>
-    <p>This page is served by Apache on {{ ansible_hostname }}.</p>
+    <h1>Welcome to {{ httpd_server_name }}!</h1>
+    <p>This page is served by httpd on {{ ansible_hostname }}.</p>
 </body>
 </html>
 
 
-# 3. `roles/apache/vars/main.yml`
+# 3. `roles/httpd/vars/main.yml`
 
-Here, you can define the variables used by the playbook. For example, you can define the `apache_package_name` or any other variables that make the role more configurable.
+Here, you can define the variables used by the playbook. For example, you can define the `httpd_package_name` or any other variables that make the role more configurable.
 
 yaml
 ---
-# vars/main.yml
+# vars/main.yml - vars file for httpd
 
-apache_package_name: httpd
-apache_server_name: "My Apache Server"
+httpd_package_name: httpd
+httpd_server_name: "My httpd Server"
 
 
-# 4. `roles/apache/defaults/main.yml`
+# 4. `roles/httpd/defaults/main.yml`
 
 You can specify default values for variables here. These defaults can be overridden by the `vars/main.yml` or playbook.
 
@@ -1234,11 +1234,11 @@ yaml
 ---
 # defaults/main.yml
 
-apache_package_name: httpd
-apache_server_name: "Default Apache Server"
+httpd_package_name: httpd
+httpd_server_name: "Default httpd Server"
 
 
-# 5. `roles/apache/handlers/main.yml`
+# 5. `roles/httpd/handlers/main.yml`
 
 This file will contain the handler to restart the `httpd` service.
 
@@ -1252,7 +1252,7 @@ yaml
     state: restarted
 
 
-# 6. `roles/apache/meta/main.yml`
+# 6. `roles/httpd/meta/main.yml`
 
 This file is for role metadata, including dependencies. For now, you can leave it empty unless you have dependencies.
 
@@ -1273,7 +1273,7 @@ yaml
 ---
 - name: Install and configure httpd on all servers
   hosts: all  
-  gather_facts: no  # set to yes so we can use ansible facts like ansible_hostname
+  gather_facts: yes  # set to yes so we can use ansible facts like ansible_hostname
   become: true  
   vars_files:
     - vars.yaml  # This file will be referenced in the playbook
@@ -1289,13 +1289,13 @@ yaml
 ---
 # vars.yaml
 
-apache_server_name: "Custom Apache Server"
+httpd_server_name: "Custom httpd Server"
 
 
  Final Notes:
 
 - Modularity: The role is now modular and can be reused across multiple playbooks.
-- Customizability: You can customize the Apache server name, package name, and other variables by modifying `vars/main.yml` or the `vars.yaml` file.
+- Customizability: You can customize the httpd server name, package name, and other variables by modifying `vars/main.yml` or the `vars.yaml` file.
 - Template: The `index.html` template allows for dynamic content generation based on Ansible facts or variables. For example, `{{ ansible_hostname }}` can be used to display the host’s name in the web page.
 
 
@@ -1639,18 +1639,18 @@ ansible tag__Hosts -i aws_ec2.yml -m ping -u ec2-user --private-key /home/ec2-us
 ---
 
  **7️⃣ Create & Run a Playbook**
-📌 **Create a playbook** `install_apache.yml`:
+📌 **Create a playbook** `install_httpd.yml`:
 yaml
-- name: Install Apache on AWS EC2
+- name: Install httpd on AWS EC2
   hosts: tag_WebServers
   become: yes
   tasks:
-    - name: Install Apache
+    - name: Install httpd
       ansible.builtin.yum:
         name: httpd
         state: present
 
-    - name: Start Apache Service
+    - name: Start httpd Service
       ansible.builtin.service:
         name: httpd
         state: started
